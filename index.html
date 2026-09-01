@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Language Leader School — Student ID Challenge</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:"Trebuchet MS","Arial Rounded MT Bold",Arial,sans-serif;
+  color:#18234d;
+  background:
+    radial-gradient(circle at 8% 12%,#fff 0 4px,transparent 5px),
+    radial-gradient(circle at 92% 80%,#fff 0 5px,transparent 6px),
+    linear-gradient(135deg,#b8f7ff,#d7c8ff 45%,#ffd0e9 72%,#fff1a2);
+}
+.app{height:100dvh;width:100%;overflow:hidden;position:relative}
+.bg1,.bg2{position:absolute;border-radius:50%;z-index:0}
+.bg1{width:38vw;height:38vw;left:-15vw;top:-20vw;background:#ff69b7;opacity:.9}
+.bg2{width:32vw;height:32vw;right:-12vw;bottom:-17vw;background:#70dcff;opacity:.9}
+.spark{position:absolute;color:#fff;text-shadow:3px 3px 0 #18234d;font-weight:900;z-index:1}
+.s1{left:4%;top:30%;font-size:32px}.s2{right:5%;top:12%;font-size:24px}
+.s3{right:20%;bottom:8%;font-size:30px}.s4{left:45%;top:5%;font-size:18px}
+
+.shell{
+  position:relative;z-index:2;width:min(1180px,94vw);height:100%;
+  margin:auto;padding:18px 0 20px;display:flex;flex-direction:column;
+}
+.top{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  flex:0 0 auto;
+}
+.logo{
+  background:#fff;border:3px solid #18234d;border-radius:999px;
+  padding:8px 15px;font-weight:1000;box-shadow:5px 5px 0 #18234d;
+  transform:rotate(-1deg);font-size:clamp(11px,1.2vw,15px)
+}
+.progress{
+  display:flex;gap:7px;align-items:center;font-size:12px;font-weight:900;
+}
+.step{
+  padding:7px 11px;border:2px solid #18234d;border-radius:999px;background:#ffffffa8
+}
+.step.active{background:#8dff72}
+.score{
+  background:#fff86a;border:3px solid #18234d;border-radius:12px;
+  padding:8px 12px;font-weight:1000;box-shadow:4px 4px 0 #18234d
+}
+.title{text-align:center;margin:15px 0 5px;flex:0 0 auto}
+h1{
+  margin:0;text-transform:uppercase;font-size:clamp(27px,4.5vw,55px);
+  line-height:.95;letter-spacing:-.04em;color:#fff;
+  -webkit-text-stroke:1.5px #18234d;
+  text-shadow:4px 4px 0 #ff4ca5,7px 7px 0 #18234d
+}
+.subtitle{font-size:clamp(12px,1.5vw,17px);font-weight:800;margin-top:10px}
+
+.card{
+  background:#ffffffed;border:3px solid #18234d;border-radius:24px;
+  box-shadow:9px 9px 0 #18234d;padding:clamp(14px,2vw,23px);
+  width:min(920px,100%);margin:12px auto 0;flex:1;min-height:0;
+  display:flex;flex-direction:column;
+}
+.instruction{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-bottom:12px;flex:0 0 auto;
+}
+.instruction strong{font-size:clamp(15px,1.8vw,21px)}
+.hint{
+  background:#fff86a;border:2px solid #18234d;border-radius:9px;
+  padding:6px 10px;font-size:11px;font-weight:900
+}
+
+.input-group{
+  margin:15px 0;text-align:center;
+}
+.input-group label{
+  display:block;font-size:13px;font-weight:1000;color:#ff4ca5;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.input-group input{
+  width:100%;max-width:400px;padding:12px 15px;border:3px solid #18234d;
+  border-radius:12px;font-size:18px;font-weight:900;text-align:center;
+  text-transform:uppercase;background:#fff;
+}
+.input-group input:focus{outline:none;border-color:#ff4ca5}
+
+.name-display{
+  text-align:center;margin:15px 0;padding:20px;
+  background:#fff;border:3px solid #18234d;border-radius:18px;
+  box-shadow:6px 6px 0 #18234d;
+}
+.name-label{font-size:12px;font-weight:1000;color:#ff4ca5;margin-bottom:8px;text-transform:uppercase}
+.name-text{
+  font-size:clamp(28px,4.5vw,45px);font-weight:1000;letter-spacing:.1em;
+  color:#18234d;
+}
+.name-text .letter{
+  display:inline-block;min-width:35px;margin:0 2px;
+  border-bottom:4px solid #ff4ca5;padding-bottom:5px;
+}
+.name-text .letter.filled{color:#8dff72;border-color:#19853d}
+.name-text .letter.wrong{color:#ff4ca5;border-color:#ff4ca5}
+
+.keyboard{
+  display:flex;flex-direction:column;gap:8px;justify-content:center;
+  margin:15px 0;padding:15px;
+}
+.keyboard-row{
+  display:flex;gap:6px;justify-content:center;
+}
+.key{
+  user-select:none;cursor:pointer;background:#fff;border:3px solid #18234d;
+  border-radius:10px;padding:10px 14px;font-size:clamp(14px,2vw,20px);
+  font-weight:1000;box-shadow:2px 3px 0 #b7b1dc;
+  transition:.1s transform,.1s background,.1s box-shadow;
+  text-transform:uppercase;min-width:32px;text-align:center;
+}
+.key:hover{transform:translateY(-2px)}
+.key:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #b7b1dc}
+.key.backspace{
+  background:#ff8a8a;min-width:80px;
+}
+.key.backspace:hover{background:#ff6b6b}
+
+.buttons{
+  display:flex;justify-content:center;gap:10px;margin-top:15px;flex:0 0 auto;
+  flex-wrap:wrap;
+}
+button{
+  border:3px solid #18234d;border-radius:12px;background:#ff4ca5;color:#fff;
+  padding:9px 17px;font-weight:1000;cursor:pointer;
+  box-shadow:4px 4px 0 #18234d;font-size:13px
+}
+button.secondary{background:#fff;color:#18234d}
+button:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #18234d}
+
+.feedback{
+  text-align:center;font-size:13px;font-weight:900;min-height:19px;margin-top:10px;
+}
+.hidden{display:none!important}
+.final{
+  text-align:center;margin:auto;max-width:650px;
+}
+.final .emoji{font-size:55px}
+.final h2{font-size:clamp(27px,4vw,45px);margin:5px 0}
+.final p{font-weight:800;line-height:1.45}
+.dialogue-box{
+  margin:20px 0;padding:15px;background:#f9f7ff;border:2px dashed #a9a9cf;
+  border-radius:14px;text-align:left;
+}
+.dialogue-line{margin:10px 0;padding:10px;background:#fff;border-radius:10px}
+.dialogue-line .speaker{font-size:11px;font-weight:1000;color:#ff4ca5;text-transform:uppercase}
+.dialogue-line .text{font-size:clamp(14px,1.8vw,18px);font-weight:900;margin-top:5px}
+
+.role-selector{
+  display:flex;gap:15px;justify-content:center;margin:20px 0;flex-wrap:wrap;
+}
+.role-btn{
+  flex:1;min-width:200px;padding:20px;border:3px solid #18234d;border-radius:18px;
+  background:#fff;cursor:pointer;transition:.2s;
+}
+.role-btn:hover{background:#fff86a;transform:translateY(-3px)}
+.role-btn .icon{font-size:40px;margin-bottom:10px}
+.role-btn .label{font-size:16px;font-weight:1000}
+
+@media(max-width:700px){
+  .shell{padding:10px 0 12px}
+  .progress .step{display:none}
+  .card{margin-top:8px;border-radius:18px;box-shadow:6px 6px 0 #18234d}
+  .instruction{align-items:flex-start}
+  .hint{max-width:145px}
+  .key{padding:8px 10px;font-size:14px;min-width:26px}
+  .key.backspace{min-width:60px;font-size:12px}
+  .name-text{font-size:24px}
+  .name-text .letter{min-width:28px}
+  .role-selector{flex-direction:column}
+  .role-btn{min-width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bg1"></div><div class="bg2"></div>
+  <div class="spark s1">✦</div><div class="spark s2">★</div>
+  <div class="spark s3">✧</div><div class="spark s4">✦</div>
+
+  <main class="shell">
+    <div class="top">
+      <div class="logo">✦ LANGUAGE LEADER SCHOOL</div>
+      <div class="progress">
+        <span class="step active" id="step1">1 ENTER</span>
+        <span class="step" id="step2">2 SPELL</span>
+        <span class="step" id="step3">3 SPEAK</span>
+      </div>
+      <div class="score" id="score">—</div>
+    </div>
+
+    <div class="title">
+      <h1 id="title">GET YOUR STUDENT ID</h1>
+      <div class="subtitle" id="subtitle">Enter your name to get started!</div>
+    </div>
+
+    <section class="card" id="stage1">
+      <div class="input-group">
+        <label>First Name</label>
+        <input type="text" id="firstName" placeholder="e.g. MARIA" maxlength="20">
+      </div>
+      <div class="input-group">
+        <label>Last Name</label>
+        <input type="text" id="lastName" placeholder="e.g. SMITH" maxlength="20">
+      </div>
+      <div class="feedback" id="feedback1"></div>
+      <div class="buttons">
+        <button id="submitName">SUBMIT</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="stage2">
+      <div class="instruction">
+        <strong id="taskLabel">🔤 Spell the name</strong>
+        <span class="hint" id="progressHint">Name</span>
+      </div>
+      
+      <div class="name-display">
+        <div class="name-label" id="nameLabel">NAME</div>
+        <div class="name-text" id="nameText"></div>
+      </div>
+      
+      <div class="keyboard" id="keyboard"></div>
+      <div class="feedback" id="feedback2"></div>
+      <div class="buttons">
+        <button class="secondary" id="resetBtn">RESET</button>
+        <button id="nextBtn" class="hidden">NEXT</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="stage3">
+      <div class="final">
+        <div class="emoji">🎉🆔✨</div>
+        <h2>STUDENT ID READY!</h2>
+        <p>Now practice with your partner!</p>
+        
+        <div class="role-selector">
+          <div class="role-btn" id="speakerRole">
+            <div class="icon">🗣️</div>
+            <div class="label">I'm the SPEAKER</div>
+          </div>
+          <div class="role-btn" id="listenerRole">
+            <div class="icon">👂</div>
+            <div class="label">I'm the LISTENER</div>
+          </div>
+        </div>
+        
+        <div class="dialogue-box">
+          <div class="dialogue-line">
+            <div class="speaker">Teacher</div>
+            <div class="text">How do you spell your name?</div>
+          </div>
+          <div class="dialogue-line">
+            <div class="speaker">Student</div>
+            <div class="text" id="spellingExample">M-A-R-I-A.</div>
+          </div>
+          <div class="dialogue-line">
+            <div class="speaker">Teacher</div>
+            <div class="text">What's your name?</div>
+          </div>
+          <div class="dialogue-line">
+            <div class="speaker">Student</div>
+            <div class="text" id="nameExample">My name is Maria.</div>
+          </div>
+        </div>
+        
+        <button onclick="location.reload()">PLAY AGAIN</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="speakerStage">
+      <div class="instruction">
+        <strong>🗣️ You are the SPEAKER</strong>
+        <span class="hint">Spell your name for your partner</span>
+      </div>
+      
+      <div class="name-display">
+        <div class="name-label">YOUR NAME</div>
+        <div class="name-text" id="speakerName"></div>
+      </div>
+      
+      <p style="text-align:center;font-weight:900;margin:20px 0">
+        Say: "How do you spell your name?"<br>
+        Then spell your name letter by letter.
+      </p>
+      
+      <div class="buttons">
+        <button class="secondary" onclick="location.reload()">DONE</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="listenerStage">
+      <div class="instruction">
+        <strong>👂 You are the LISTENER</strong>
+        <span class="hint">Listen and type the letters</span>
+      </div>
+      
+      <div class="name-display">
+        <div class="name-label" id="listenerLabel">PARTNER'S NAME</div>
+        <div class="name-text" id="listenerName"></div>
+      </div>
+      
+      <div class="keyboard" id="listenerKeyboard"></div>
+      <div class="feedback" id="feedbackListener"></div>
+      <div class="buttons">
+        <button class="secondary" id="resetListener">RESET</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+let firstName = "";
+let lastName = "";
+let currentWord = "";
+let currentWordIndex = 0;
+let userAnswer = [];
+let words = [];
+
+document.getElementById("submitName").addEventListener("click",()=>{
+  const fn = document.getElementById("firstName").value.trim().toUpperCase();
+  const ln = document.getElementById("lastName").value.trim().toUpperCase();
+  
+  if(!fn || !ln){
+    document.getElementById("feedback1").textContent = "Please enter both names!";
+    document.getElementById("feedback1").style.color = "#ff4ca5";
+    return;
+  }
+  
+  firstName = fn;
+  lastName = ln;
+  words = [firstName, lastName];
+  currentWordIndex = 0;
+  
+  document.getElementById("stage1").classList.add("hidden");
+  document.getElementById("stage2").classList.remove("hidden");
+  document.getElementById("step1").classList.remove("active");
+  document.getElementById("step2").classList.add("active");
+  document.getElementById("title").textContent = "SPELL YOUR NAME";
+  document.getElementById("subtitle").textContent = "Listen and spell!";
+  
+  renderWord();
+});
+
+function renderWord(){
+  currentWord = words[currentWordIndex];
+  userAnswer = [];
+  
+  document.getElementById("nameLabel").textContent = currentWordIndex === 0 ? "FIRST NAME" : "LAST NAME";
+  document.getElementById("progressHint").textContent = currentWordIndex === 0 ? "Name" : "Surname";
+  
+  const nameText = document.getElementById("nameText");
+  nameText.innerHTML = "";
+  for(let i = 0; i < currentWord.length; i++){
+    const span = document.createElement("span");
+    span.className = "letter";
+    span.dataset.index = i;
+    nameText.appendChild(span);
+  }
+  
+  renderKeyboard("keyboard", selectLetter);
+  document.getElementById("feedback2").textContent = "";
+  document.getElementById("nextBtn").classList.add("hidden");
+}
+
+function renderKeyboard(containerId, callback){
+  const keyboard = document.getElementById(containerId);
+  keyboard.innerHTML = "";
+  
+  const rows = [
+    ["Q","W","E","R","T","Y","U","I","O","P"],
+    ["A","S","D","F","G","H","J","K","L"],
+    ["Z","X","C","V","B","N","M"]
+  ];
+  
+  rows.forEach(row => {
+    const rowDiv = document.createElement("div");
+    rowDiv.className = "keyboard-row";
+    
+    row.forEach(letter => {
+      const key = document.createElement("div");
+      key.className = "key";
+      key.textContent = letter;
+      key.dataset.letter = letter;
+      key.addEventListener("click", () => callback(key));
+      rowDiv.appendChild(key);
+    });
+    
+    keyboard.appendChild(rowDiv);
+  });
+  
+  const backspaceRow = document.createElement("div");
+  backspaceRow.className = "keyboard-row";
+  const backspaceKey = document.createElement("div");
+  backspaceKey.className = "key backspace";
+  backspaceKey.textContent = "⌫ BACKSPACE";
+  backspaceKey.addEventListener("click", () => {
+    if(userAnswer.length > 0){
+      userAnswer.pop();
+      updateDisplay(containerId === "keyboard" ? "nameText" : "listenerName");
+    }
+  });
+  backspaceRow.appendChild(backspaceKey);
+  keyboard.appendChild(backspaceRow);
+}
+
+function selectLetter(key){
+  const letter = key.dataset.letter;
+  
+  if(userAnswer.length >= currentWord.length) return;
+  
+  userAnswer.push(letter);
+  updateDisplay("nameText");
+  
+  if(userAnswer.length === currentWord.length){
+    const correct = userAnswer.every((l, i) => l === currentWord[i]);
+    if(correct){
+      document.getElementById("feedback2").textContent = "Perfect! ✨";
+      document.getElementById("feedback2").style.color = "#19853d";
+      
+      if(currentWordIndex < words.length - 1){
+        document.getElementById("nextBtn").classList.remove("hidden");
+      } else {
+        setTimeout(showFinal, 1000);
+      }
+    } else {
+      document.getElementById("feedback2").textContent = "Check your spelling!";
+      document.getElementById("feedback2").style.color = "#ff4ca5";
+    }
+  }
+}
+
+function updateDisplay(displayId){
+  const nameText = document.getElementById(displayId);
+  const letters = nameText.querySelectorAll(".letter");
+  
+  letters.forEach((span, i) => {
+    span.classList.remove("filled", "wrong");
+    if(i < userAnswer.length){
+      span.textContent = userAnswer[i];
+      if(userAnswer[i] === currentWord[i]){
+        span.classList.add("filled");
+      } else {
+        span.classList.add("wrong");
+      }
+    } else {
+      span.textContent = "";
+    }
+  });
+}
+
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  userAnswer = [];
+  updateDisplay("nameText");
+  document.getElementById("feedback2").textContent = "";
+  document.getElementById("nextBtn").classList.add("hidden");
+});
+
+document.getElementById("nextBtn").addEventListener("click",()=>{
+  currentWordIndex++;
+  renderWord();
+});
+
+function showFinal(){
+  document.getElementById("stage2").classList.add("hidden");
+  document.getElementById("stage3").classList.remove("hidden");
+  document.getElementById("step2").classList.remove("active");
+  document.getElementById("step3").classList.add("active");
+  document.getElementById("title").textContent = "STUDENT ID READY!";
+  document.getElementById("subtitle").textContent = "Now practice with your partner.";
+  document.getElementById("score").textContent = "✓";
+  
+  const fullName = firstName + " " + lastName;
+  const spelling = fullName.split("").join("-");
+  
+  document.getElementById("spellingExample").textContent = spelling + ".";
+  document.getElementById("nameExample").textContent = `My name is ${firstName.charAt(0) + firstName.slice(1).toLowerCase()} ${lastName.charAt(0) + lastName.slice(1).toLowerCase()}.`;
+}
+
+document.getElementById("speakerRole").addEventListener("click",()=>{
+  document.getElementById("stage3").classList.add("hidden");
+  document.getElementById("speakerStage").classList.remove("hidden");
+  document.getElementById("speakerName").textContent = firstName + " " + lastName;
+});
+
+document.getElementById("listenerRole").addEventListener("click",()=>{
+  document.getElementById("stage3").classList.add("hidden");
+  document.getElementById("listenerStage").classList.remove("hidden");
+  
+  const partnerName = prompt("Enter your partner's full name:");
+  if(!partnerName) return;
+  
+  const cleanName = partnerName.toUpperCase().replace(/\s+/g, " ").trim();
+  words = cleanName.split(" ");
+  currentWordIndex = 0;
+  currentWord = words[0];
+  userAnswer = [];
+  
+  document.getElementById("listenerLabel").textContent = "PARTNER'S NAME";
+  
+  const listenerName = document.getElementById("listenerName");
+  listenerName.innerHTML = "";
+  for(let i = 0; i < currentWord.length; i++){
+    const span = document.createElement("span");
+    span.className = "letter";
+    span.dataset.index = i;
+    listenerName.appendChild(span);
+  }
+  
+  renderKeyboard("listenerKeyboard", selectListenerLetter);
+});
+
+function selectListenerLetter(key){
+  const letter = key.dataset.letter;
+  
+  if(userAnswer.length >= currentWord.length) return;
+  
+  userAnswer.push(letter);
+  updateDisplay("listenerName");
+  
+  if(userAnswer.length === currentWord.length){
+    const correct = userAnswer.every((l, i) => l === currentWord[i]);
+    if(correct){
+      document.getElementById("feedbackListener").textContent = "Perfect! ✨";
+      document.getElementById("feedbackListener").style.color = "#19853d";
+    } else {
+      document.getElementById("feedbackListener").textContent = "Check your spelling!";
+      document.getElementById("feedbackListener").style.color = "#ff4ca5";
+    }
+  }
+}
+
+document.getElementById("resetListener").addEventListener("click",()=>{
+  userAnswer = [];
+  updateDisplay("listenerName");
+  document.getElementById("feedbackListener").textContent = "";
+});
+</script>
+</body>
+</html>
